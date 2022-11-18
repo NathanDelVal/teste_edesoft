@@ -71,7 +71,9 @@ def hello_http(request):
       for x in range(1, len(file_str.splitlines()) - 1):
         query = f'INSERT INTO {now} VALUES('
         for y in file_str.splitlines()[x].split(';'):
-            query = query + f'"{y}", '
+          if re.search('\d{2}/\d{2}/\d{4}', y) != None:
+            y = "{}-{}-{}".format(y.split('/')[2], y.split('/')[1], y.split('/')[0])
+          query = query + f'"{y}", '
         query = query.strip()[0:-1] + ')'
         #print(query)
         mycursor.execute(query)
