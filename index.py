@@ -53,31 +53,39 @@ def hello_http(request):
 
     mycursor = mydb.cursor()
 
-    query = f'CREATE TABLE {now} ('
+    if re.search('.csv\Z', b_object) != None:
 
-    for field in file_str.splitlines()[0].split(';'):
-        query = query + '{}'.format(re.sub('[\s/*&%$#@!().]','_',field.strip())) + ' VARCHAR(100), '
+      query = f'CREATE TABLE {now} ('
 
-    query = query.strip()[0:-1]
-    query = query + ')'
-    #print(query)
+      for field in file_str.splitlines()[0].split(';'):
+          query = query + '{}'.format(re.sub('[\s/*&%$#@!().]','_',field.strip())) + ' VARCHAR(100), '
 
-    try:
-      mycursor.execute(query)
-    except:
-      return 'Não foi possível criar a tabela. Verifique se ela já existe'
+      query = query.strip()[0:-1]
+      query = query + ')'
+      #print(query)
 
-    try:
-      for x in range(1, len(file_str.splitlines()) - 1):
-        query = f'INSERT INTO {now} VALUES('
-        for y in file_str.splitlines()[x].split(';'):
-          if re.search('\d{2}/\d{2}/\d{4}', y) != None:
-            y = "{}-{}-{}".format(y.split('/')[2], y.split('/')[1], y.split('/')[0])
-          query = query + f'"{y}", '
-        query = query.strip()[0:-1] + ')'
-        #print(query)
+      try:
         mycursor.execute(query)
-    except:
-      return f'Não foi possível inserir os valores na tabela {now}'
-      
-    return 'Sucesso!!'
+      except:
+        return 'Não foi possível criar a tabela. Verifique se ela já existe'
+
+      try:
+        for x in range(1, len(file_str.splitlines()) - 1):
+          query = f'INSERT INTO {now} VALUES('
+          for y in file_str.splitlines()[x].split(';'):
+            if re.search('\d{2}/\d{2}/\d{4}', y) != None:
+              y = "{}-{}-{}".format(y.split('/')[2], y.split('/')[1], y.split('/')[0])
+              query = query + f'"{y}", '
+            if re.search('\d{2}-\d{2}-\d{4}', y) != None:
+              y = "{}-{}-{}".format(y.split('-')[2], y.split('-')[1], y.split('-')[0])
+              query = query + f'"{y}", '
+          query = query.strip()[0:-1] + ')'
+          #print(query)
+          mycursor.execute(query)
+      except:
+        return f'Não foi possível inserir os valores na tabela {now}'
+        
+      return 'Sucesso!!'
+
+    else:
+      return 'Formato .csv não encontrado. Escolha um arquivo .csv'

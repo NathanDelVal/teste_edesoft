@@ -1,5 +1,5 @@
 # teste_edesoft
-Leitura de arquivo no Google Cloud para inserção dos dados em um banco de dados SQL -> FORA DO CLOUD <-
+Leitura de arquivo .csv no Google Cloud para inserção dos dados em um banco de dados SQL -> FORA DO CLOUD <-
 
 ############ PARA EXECUTAR ESTE CÓDIGO, VOCÊ PRECISA: #############
 
